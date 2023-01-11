@@ -25,6 +25,6 @@ export const rollDiceCommand = {
         `result=${result}`,
       ].join(' '),
     )
-    await interaction.reply(`Rolled a ${result}`)
+    await interaction.reply(`Rolled a ${result} from a d${sides}`)
   },
 }
