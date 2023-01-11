@@ -1,4 +1,5 @@
 import { Client, Events } from 'discord.js'
+import { logger } from 'src/logger'
 
 import { flipCoinCommand } from './flipCoin'
 import { rollDiceCommand } from './rollDice'
@@ -14,6 +15,10 @@ export function setupCommandHandlers(client: Client<boolean>) {
     if (!interaction.isChatInputCommand()) return
 
     const command = commandMap.get(interaction.commandName)
-    await command?.execute(interaction)
+    try {
+      await command?.execute(interaction)
+    } catch (err) {
+      logger.error(`Failed to execute command "${interaction.commandName}"`)
+    }
   })
 }

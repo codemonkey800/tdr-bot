@@ -1,5 +1,6 @@
 import { Client, Events, GatewayIntentBits } from 'discord.js'
 import { setupCommandHandlers } from 'src/commands'
+import { logger } from 'src/logger'
 import { getAPIToken } from 'src/utils'
 
 export async function start() {
@@ -10,5 +11,10 @@ export async function start() {
     setupCommandHandlers(client)
   })
 
-  await client.login(token)
+  try {
+    await client.login(token)
+    logger.log('Started tdr-bot!!')
+  } catch (err) {
+    logger.error('Failed to login to Discord client', err)
+  }
 }

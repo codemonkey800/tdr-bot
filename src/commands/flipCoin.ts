@@ -1,4 +1,5 @@
 import { CacheType, Interaction, SlashCommandBuilder } from 'discord.js'
+import { logger } from 'src/logger'
 
 export const flipCoinCommand = {
   data: new SlashCommandBuilder()
@@ -8,6 +9,7 @@ export const flipCoinCommand = {
   async execute(interaction: Interaction<CacheType>) {
     if (!interaction.isChatInputCommand()) return
     const result = Math.random() <= 0.5 ? 'Heads' : 'Tails'
+    logger.log(`flip-coin result=${result}`)
     await interaction.reply(`${result}`)
   },
 }
