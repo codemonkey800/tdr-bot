@@ -36,6 +36,8 @@ module.exports = {
   plugins: ['simple-import-sort', 'unused-imports'],
 
   rules: {
+    'no-console': 'off',
+
     // It's helpful to split functionality into multiple functions within a class.
     'class-methods-use-this': 'off',
 
