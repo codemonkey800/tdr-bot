@@ -17,7 +17,14 @@ export const rollDiceCommand = {
     if (!interaction.isChatInputCommand()) return
     const sides = interaction.options.getNumber('sides') ?? 6
     const result = random(1, sides)
-    logger.log(`roll-dice sides=${sides} result=${result}`)
+    logger.log(
+      [
+        'roll-dice',
+        `user=${interaction.user.username}`,
+        `sides=${sides}`,
+        `result=${result}`,
+      ].join(' '),
+    )
     await interaction.reply(`Rolled a ${result}`)
   },
 }

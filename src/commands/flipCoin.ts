@@ -9,7 +9,13 @@ export const flipCoinCommand = {
   async execute(interaction: Interaction<CacheType>) {
     if (!interaction.isChatInputCommand()) return
     const result = Math.random() <= 0.5 ? 'Heads' : 'Tails'
-    logger.log(`flip-coin result=${result}`)
+    logger.log(
+      [
+        'flip-coin',
+        `user=${interaction.user.username}`,
+        `result=${result}`,
+      ].join(' '),
+    )
     await interaction.reply(`${result}`)
   },
 }
