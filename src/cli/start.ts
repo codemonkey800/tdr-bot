@@ -5,13 +5,12 @@ import { getAPIToken } from 'src/utils'
 
 export async function start() {
   const client = new Client({ intents: [GatewayIntentBits.Guilds] })
-  const token = getAPIToken()
-
   client.once(Events.ClientReady, () => {
     setupCommandHandlers(client)
   })
 
   try {
+    const token = getAPIToken()
     await client.login(token)
     logger.log('Started tdr-bot!!')
   } catch (err) {

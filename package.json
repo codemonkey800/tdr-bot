@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "tsx watch ./src/main.ts",
     "lint": "eslint src",
+    "post-weekly-cookies": "tsx ./src/main.ts post-weekly-cookies",
     "register": "tsx ./src/main.ts register-commands",
     "start": "tsx ./src/main.ts"
   },

@@ -1,10 +1,15 @@
 import { Client, Events } from 'discord.js'
 import { logger } from 'src/logger'
 
+import { crumblCookiesCommand } from './crumblCookies'
 import { flipCoinCommand } from './flipCoin'
 import { rollDiceCommand } from './rollDice'
 
-export const commands = [rollDiceCommand, flipCoinCommand] as const
+export const commands = [
+  rollDiceCommand,
+  flipCoinCommand,
+  crumblCookiesCommand,
+] as const
 
 const commandMap = new Map(
   commands.map((command) => [command.data.name, command]),
