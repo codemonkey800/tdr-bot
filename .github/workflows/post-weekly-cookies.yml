@@ -3,7 +3,7 @@ name: Post Weekly Cookies
 on:
   workflow_dispatch:
   schedule:
-    - cron: '* 9 * * 1'
+    - cron: '0 17 * * 1'
 
 jobs:
   post-weekly-cookies:
