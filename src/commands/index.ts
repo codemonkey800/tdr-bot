@@ -24,6 +24,7 @@ export function setupCommandHandlers(client: Client<boolean>) {
       await command?.execute(interaction)
     } catch (err) {
       logger.error(`Failed to execute command "${interaction.commandName}"`)
+      logger.error(err)
     }
   })
 }
