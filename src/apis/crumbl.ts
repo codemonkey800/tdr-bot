@@ -7,7 +7,7 @@ interface CrumblCookieProduct {
   image: string
   description: string
   calorieInformation: {
-    perServing: string
+    perServing: string | null
   }
   allergyInformation: {
     description: string
@@ -50,10 +50,13 @@ export async function getWeeklyCookiesMessage({
           .setTitle(cookie.name)
           .setImage(cookie.image)
           .setDescription(cookie.description)
-          .addFields({
+
+        if (cookie.calorieInformation.perServing !== null) {
+          embed = embed.addFields({
             name: 'Calories',
             value: cookie.calorieInformation.perServing,
           })
+        }
 
         if (cookie.allergyInformation.description) {
           embed = embed.addFields({
