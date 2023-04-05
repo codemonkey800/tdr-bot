@@ -9,8 +9,8 @@ interface CrumblCookieProduct {
   calorieInformation: {
     perServing: string | null
   }
-  allergyInformation: {
-    description: string
+  allergyInformation?: {
+    description?: string
   }
 }
 
@@ -58,10 +58,11 @@ export async function getWeeklyCookiesMessage({
           })
         }
 
-        if (cookie.allergyInformation.description) {
+        const allergyDescription = cookie.allergyInformation?.description
+        if (allergyDescription) {
           embed = embed.addFields({
             name: 'Allergies',
-            value: cookie.allergyInformation.description,
+            value: allergyDescription,
           })
         }
 
