@@ -1,26 +1,28 @@
-import dotenv from 'dotenv'
+import 'reflect-metadata'
 
-import { postWeeklyCookies } from './cli/postWeeklyCookies'
-import { registerCommands } from './cli/registerCommands'
-import { start } from './cli/start'
+import dotenv from 'dotenv'
+import yargs from 'yargs'
+
+import { Application } from './core/app'
 
 dotenv.config()
 
-async function main([command]: string[]) {
-  switch (command) {
-    case 'register-commands':
-      await registerCommands()
-      break
+async function main() {
+  const app = new Application()
 
-    case 'post-weekly-cookies':
-      await postWeeklyCookies()
-      break
-
-    default:
-      await start()
-      break
-  }
+  await yargs
+    .option('breh', { type: 'string' })
+    .command('start', 'Starts Discord bot', () => app.start())
+    .command('register', 'Register commands', () => app.registerCommands())
+    .demandCommand(1, 'You must specify at least 1 command')
+    .scriptName('./tdr-bot')
+    .alias('h', 'help')
+    .alias('v', 'version')
+    .version('420.69')
+    .help()
+    .strict()
+    .parse()
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
-main(process.argv.slice(2))
+main()

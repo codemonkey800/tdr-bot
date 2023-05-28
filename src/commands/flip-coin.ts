@@ -1,12 +1,16 @@
 import { CacheType, Interaction, SlashCommandBuilder } from 'discord.js'
-import { logger } from 'src/logger'
+import { injectable } from 'inversify'
+import { logger } from 'src/core/logger'
 
-export const flipCoinCommand = {
-  data: new SlashCommandBuilder()
+import { BaseCommand } from './base-command'
+
+@injectable()
+export class FlipCoinCommand extends BaseCommand {
+  protected command = new SlashCommandBuilder()
     .setName('flip-coin')
-    .setDescription('Flips a coin'),
+    .setDescription('Flips a coin')
 
-  async execute(interaction: Interaction<CacheType>) {
+  async execute(interaction: Interaction<CacheType>): Promise<void> {
     if (!interaction.isChatInputCommand()) return
     const result = Math.random() <= 0.5 ? 'Heads' : 'Tails'
     logger.log(
@@ -17,5 +21,5 @@ export const flipCoinCommand = {
       ].join(' '),
     )
     await interaction.reply(`${result}`)
-  },
+  }
 }
