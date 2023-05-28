@@ -1,4 +1,4 @@
-import { Client, Message } from 'discord.js'
+import { Message } from 'discord.js'
 import { injectable } from 'inversify'
 import { random } from 'lodash'
 import { getClientID } from 'src/core/utils'
@@ -6,16 +6,12 @@ import { getClientID } from 'src/core/utils'
 import { BaseEvent, EventRecurrence } from './base-event'
 
 @injectable()
-export class SendWarOnWarMessageEvent extends BaseEvent<'messageCreate'> {
+export class SendWarOnWarMessageEvent implements BaseEvent<'messageCreate'> {
   name = 'send-war-on-war-message'
 
   event = 'messageCreate' as const
 
   recurrence = EventRecurrence.On
-
-  constructor(readonly discordClient: Client<true>) {
-    super(discordClient)
-  }
 
   async handleEvent(message: Message<boolean>) {
     const clientId = getClientID()

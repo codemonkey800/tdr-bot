@@ -9,6 +9,7 @@ import {
   RollDiceCommand,
 } from 'src/commands'
 import { EventManager } from 'src/events/event-manager'
+import { HandleConversationOnMessageEvent } from 'src/events/handle-conversation'
 import { SendWarOnWarMessageEvent } from 'src/events/send-war-on-war-message'
 import { Scheduler, WeeklyCrumblCookiesSchedule } from 'src/schedule'
 
@@ -42,6 +43,7 @@ export class Application {
   private bindEvents() {
     this.container.bind(EventManager).toSelf()
     this.container.bind(SendWarOnWarMessageEvent).toSelf()
+    this.container.bind(HandleConversationOnMessageEvent).toSelf()
   }
 
   private handleClientReady() {
