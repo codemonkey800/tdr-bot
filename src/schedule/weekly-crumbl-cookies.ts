@@ -14,10 +14,10 @@ export class WeeklyCrumblCookiesSchedule extends BaseSchedule {
     super()
   }
 
-  // Post weekly message at 10am PST on Sundays
+  // Post weekly message at 10am PST on Monday
   get rule() {
     const rule = new RecurrenceRule()
-    rule.dayOfWeek = 0
+    rule.dayOfWeek = 1
     rule.hour = 10
     rule.minute = 0
     rule.second = 0
