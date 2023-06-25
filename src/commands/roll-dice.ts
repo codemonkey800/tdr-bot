@@ -1,13 +1,12 @@
 import { CacheType, Interaction, SlashCommandBuilder } from 'discord.js'
-import { injectable } from 'inversify'
 import { random } from 'lodash'
-import { logger } from 'src/core/logger'
 
-import { BaseCommand } from './base-command'
+import { Command } from './types'
 
-@injectable()
-export class RollDiceCommand extends BaseCommand {
-  protected command = new SlashCommandBuilder()
+export const rollDice: Command = {
+  name: 'roll-dice',
+
+  data: new SlashCommandBuilder()
     .setName('roll-dice')
     .setDescription('Rolls dice')
     .addNumberOption((option) =>
@@ -15,13 +14,13 @@ export class RollDiceCommand extends BaseCommand {
         .setName('sides')
         .setDescription('The number of sides to use for the dice roll.')
         .setMinValue(1),
-    )
+    ),
 
-  async execute(interaction: Interaction<CacheType>): Promise<void> {
+  async execute(interaction: Interaction<CacheType>) {
     if (!interaction.isChatInputCommand()) return
     const sides = interaction.options.getNumber('sides') ?? 6
     const result = random(1, sides)
-    logger.log(
+    console.log(
       [
         'roll-dice',
         `user=${interaction.user.username}`,
@@ -30,5 +29,5 @@ export class RollDiceCommand extends BaseCommand {
       ].join(' '),
     )
     await interaction.reply(`Rolled a ${result} from a d${sides}`)
-  }
+  },
 }

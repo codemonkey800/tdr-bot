@@ -1,6 +1,3 @@
-export * from './all-commands'
-export * from './command-registrar'
-export * from './command-setup'
 export * from './crumbl-cookies'
 export * from './flip-coin'
 export * from './roll-dice'

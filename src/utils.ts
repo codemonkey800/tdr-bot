@@ -1,11 +1,9 @@
-import { logger } from './logger'
-
 export function env(key: string): string {
   const value = process.env[key]
 
   if (!value) {
     const message = `${key} not defined`
-    logger.error(message)
+    console.error(message)
     throw new Error(message)
   }
 

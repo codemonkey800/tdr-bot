@@ -1,18 +1,10 @@
-import { Client } from 'discord.js'
-import { injectable } from 'inversify'
 import { RecurrenceRule } from 'node-schedule'
 import { getWeeklyCookiesMessage } from 'src/apis/crumbl'
-import { logger } from 'src/core/logger'
 
-import { BaseSchedule } from './base-schedule'
+import { Schedule } from './types'
 
-@injectable()
-export class WeeklyCrumblCookiesSchedule extends BaseSchedule {
-  name = 'weekly-crumbl-cookies'
-
-  constructor(private readonly client: Client<true>) {
-    super()
-  }
+export const weeklyCrumblCookiesSchedule: Schedule = {
+  name: 'weekly-crumbl-cookies',
 
   // Post weekly message at 10am PST on Monday
   get rule() {
@@ -24,15 +16,15 @@ export class WeeklyCrumblCookiesSchedule extends BaseSchedule {
     rule.tz = 'US/Pacific'
 
     return rule
-  }
+  },
 
-  async handleJob() {
+  async execute(client) {
     // Find all channels named 'food'
-    const channels = this.client.guilds.cache.flatMap((guild) =>
+    const channels = client.guilds.cache.flatMap((guild) =>
       guild.channels.cache.filter((channel) => channel.name === 'food'),
     )
     const totalChannels = channels.reduce((total) => total + 1, 0)
-    logger.log(`Sending to ${totalChannels} channels `)
+    console.log(`Sending to ${totalChannels} channels `)
 
     // Send weekly Crumbl cookies message to each channel and wait for all to finish
     await Promise.allSettled(
@@ -41,11 +33,11 @@ export class WeeklyCrumblCookiesSchedule extends BaseSchedule {
           return
         }
 
-        logger.log('Sending weekly Crumbl cookies')
+        console.log('Sending weekly Crumbl cookies')
         await channel.send(await getWeeklyCookiesMessage({ showEmbeds: true }))
       }),
     )
 
-    logger.log('Finished sending weekly Crumbl cookies')
-  }
+    console.log('Finished sending weekly Crumbl cookies')
+  },
 }

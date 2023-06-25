@@ -1,19 +1,14 @@
-import 'reflect-metadata'
-
 import dotenv from 'dotenv'
 import yargs from 'yargs'
 
-import { Application } from './core/app'
+import * as app from './app'
 
 dotenv.config()
 
 async function main() {
-  const app = new Application()
-
   await yargs
-    .option('breh', { type: 'string' })
-    .command('start', 'Starts Discord bot', () => app.start())
-    .command('register', 'Register commands', () => app.registerCommands())
+    .command('start', 'Starts Discord bot', app.startBot)
+    .command('register', 'Register commands', app.registerCommands)
     .demandCommand(1, 'You must specify at least 1 command')
     .scriptName('./tdr-bot')
     .alias('h', 'help')
