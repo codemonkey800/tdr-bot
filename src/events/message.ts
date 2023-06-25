@@ -4,6 +4,7 @@ import {
   initializeAgentExecutorWithOptions,
 } from 'langchain/agents'
 import { ChatOpenAI } from 'langchain/chat_models/openai'
+import { BufferWindowMemory } from 'langchain/memory'
 import { SerpAPI } from 'langchain/tools'
 import { Calculator } from 'langchain/tools/calculator'
 import { random } from 'lodash'
@@ -36,7 +37,7 @@ async function maybeInitExecutor(): Promise<AgentExecutor> {
     return cachedExecutor
   }
 
-  const model = new ChatOpenAI({ temperature: 0 })
+  const model = new ChatOpenAI({ temperature: 0, modelName: 'gpt-4' })
   const tools = [
     new SerpAPI(process.env.SERP_API_KEY, {
       hl: 'en',
@@ -48,6 +49,7 @@ async function maybeInitExecutor(): Promise<AgentExecutor> {
   console.log('Creating executor...')
   cachedExecutor = await initializeAgentExecutorWithOptions(tools, model, {
     agentType: 'chat-conversational-react-description',
+    memory: new BufferWindowMemory({ k: 69, memoryKey: 'chat_history' }),
   })
   console.log('Executor created!')
 
