@@ -4,7 +4,6 @@ import {
   initializeAgentExecutorWithOptions,
 } from 'langchain/agents'
 import { ChatOpenAI } from 'langchain/chat_models/openai'
-import { BufferWindowMemory } from 'langchain/memory'
 import { SerpAPI } from 'langchain/tools'
 import { Calculator } from 'langchain/tools/calculator'
 import { random } from 'lodash'
@@ -31,13 +30,21 @@ async function handleWarMessage(message: Message<boolean>) {
 }
 
 let cachedExecutor: AgentExecutor | undefined
+let count = 0
 
 async function maybeInitExecutor(): Promise<AgentExecutor> {
-  if (cachedExecutor) {
+  if (cachedExecutor && count < 69) {
+    count += 1
     return cachedExecutor
   }
 
-  const model = new ChatOpenAI({ temperature: 0, modelName: 'gpt-4' })
+  if (count === 69) {
+    console.log('Recreating executor to clear memory')
+  }
+
+  count = 0
+
+  const model = new ChatOpenAI({ temperature: 0 })
   const tools = [
     new SerpAPI(process.env.SERP_API_KEY, {
       hl: 'en',
@@ -49,7 +56,6 @@ async function maybeInitExecutor(): Promise<AgentExecutor> {
   console.log('Creating executor...')
   cachedExecutor = await initializeAgentExecutorWithOptions(tools, model, {
     agentType: 'chat-conversational-react-description',
-    memory: new BufferWindowMemory({ k: 69, memoryKey: 'chat_history' }),
   })
   console.log('Executor created!')
 
@@ -68,27 +74,29 @@ async function handleChatMessage(message: Message<boolean>) {
     return false
   }
 
-  try {
+  await message.channel.sendTyping()
+  let sendTypingCount = 1
+  const typingInterval = setInterval(async () => {
+    if (sendTypingCount > 5) {
+      await message.reply(
+        "Sorry it's taking me longer than usual to process this message",
+      )
+      clearInterval(typingInterval)
+
+      return
+    }
+
+    sendTypingCount += 1
     await message.channel.sendTyping()
-    let sendTypingCount = 1
-    const typingInterval = setInterval(async () => {
-      if (sendTypingCount > 5) {
-        await message.reply(
-          "Sorry it's taking me longer than usual to process this message",
-        )
-        clearInterval(typingInterval)
+  }, 11 * 1000)
 
-        return
-      }
-
-      sendTypingCount += 1
-      await message.channel.sendTyping()
-    }, 11 * 1000)
-
+  try {
     const formattedMessage = message.mentions.users.reduce(
       (msg, user) => msg.replaceAll(`<@${user.id}>`, user.username),
       message.content,
     )
+
+    console.log(`Generating completion for message: "${formattedMessage}"`)
 
     const executor = await maybeInitExecutor()
     const result = await executor.call({
@@ -96,11 +104,16 @@ async function handleChatMessage(message: Message<boolean>) {
     })
     const response = result.output as string
 
-    console.log(`Responding with message: "${response}"`)
     await message.channel.send(response)
     clearInterval(typingInterval)
+    console.log('Response sent successfully')
   } catch (err) {
     console.error('Error resolving chat message', err)
+    await message.reply(
+      `An error occurred for this message\n\`\`\`\n${String(err)}\n\`\`\``,
+    )
+    clearInterval(typingInterval)
+
     return false
   }
 
