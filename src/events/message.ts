@@ -120,7 +120,21 @@ async function handleChatMessage(message: Message<boolean>) {
   return true
 }
 
-const handlers = [handleWarMessage, handleChatMessage]
+async function handleProgMessage(message: Message<boolean>) {
+  const clientId = getClientID()
+
+  if (
+    message.content.toLowerCase().split(' ').includes('prog') &&
+    message.author.id !== clientId
+  ) {
+    await message.reply('prog')
+    return true
+  }
+
+  return false
+}
+
+const handlers = [handleWarMessage, handleProgMessage, handleChatMessage]
 
 export const messageHandler: EventHandler<'messageCreate'> = {
   event: 'messageCreate',
