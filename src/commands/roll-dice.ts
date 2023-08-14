@@ -1,5 +1,5 @@
 import { CacheType, Interaction, SlashCommandBuilder } from 'discord.js'
-import { random } from 'lodash'
+import _ from 'lodash'
 
 import { Command } from './types'
 
@@ -19,7 +19,7 @@ export const rollDice: Command = {
   async execute(interaction: Interaction<CacheType>) {
     if (!interaction.isChatInputCommand()) return
     const sides = interaction.options.getNumber('sides') ?? 6
-    const result = random(1, sides)
+    const result = _.random(1, sides)
     console.log(
       [
         'roll-dice',

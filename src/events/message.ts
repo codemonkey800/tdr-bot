@@ -6,10 +6,11 @@ import {
 import { ChatOpenAI } from 'langchain/chat_models/openai'
 import { SerpAPI } from 'langchain/tools'
 import { Calculator } from 'langchain/tools/calculator'
-import { random } from 'lodash'
+import _ from 'lodash'
 import { getClientID } from 'src/utils'
 
 import { EventHandler } from './types'
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai'
 
 async function handleWarMessage(message: Message<boolean>) {
   const clientId = getClientID()
@@ -18,7 +19,7 @@ async function handleWarMessage(message: Message<boolean>) {
     message.content.toLowerCase().split(' ').includes('war') &&
     message.author.id !== clientId
   ) {
-    if (random(1, 420) === 420) {
+    if (_.random(1, 420) === 420) {
       await message.reply('war never changes')
     }
 
@@ -97,14 +98,63 @@ async function handleChatMessage(message: Message<boolean>) {
     )
 
     console.log(`Generating completion for message: "${formattedMessage}"`)
+    let messages: ChatCompletionRequestMessage[] = []
 
-    const executor = await maybeInitExecutor()
-    const result = await executor.call({
-      input: `${message.author.username} said "${formattedMessage}"`,
+    const config = new Configuration({ apiKey: process.env.OPENAI_API_KEY })
+    const openai = new OpenAIApi(config)
+    const response = await openai.createChatCompletion({
+      model: 'gpt-4',
+      messages: [
+        {
+          role: 'system',
+          content: `
+          You are a very good friend and are a member of the Discord server TDR.
+          This server is a group of friends that have known each other since
+          high school, and you are now part of that group of friends. You know
+          each person by username.
+
+          paulbeenis420 and paulcreenis69 is Jeremy
+          jackjack2 is Jack
+          krisithea is Kristian
+          basuradavid is David
+          bigkrizz is Kris
+          bbonedaddy is Baker
+          casserole69 is Carlos
+          hiro.shi is Shane
+
+          Your name is TDR Bot and your creator is Jeremy.
+
+          Try your best to respond to every message in a friendly manner, and
+          try to make conversation with people and ask follow up questions if
+          possible. It should flow like a normal conversation unless the message
+          indicates that it's the end of the conversation.
+
+          Every message you receive will be in the format:
+          <Author> said "<Message>"
+          `,
+        },
+        ...messages,
+        {
+          role: 'user',
+          content: `${message.author.username} said "${formattedMessage}"`,
+        },
+      ],
     })
-    const response = result.output as string
 
-    await message.channel.send(response)
+    console.log(`author=${message.author.username}`, response.data.choices)
+
+    const messageResponse = response.data.choices[0].message
+    if (messageResponse) {
+      messages.push(messageResponse)
+
+      if (messages.length > 20) {
+        messages = messages.slice(15)
+      }
+
+      await message.channel.send(messageResponse)
+    } else {
+      throw new Error('Chat completion could not be generated :(')
+    }
     clearInterval(typingInterval)
     console.log('Response sent successfully')
   } catch (err) {

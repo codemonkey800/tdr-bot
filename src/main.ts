@@ -1,22 +1,15 @@
+import { installGlobals } from '@remix-run/node'
 import dotenv from 'dotenv'
-import yargs from 'yargs'
-
-import * as app from './app'
+import sourceMapSupport from 'source-map-support'
+import { startWebServer } from './core/start-web-server'
+import { startBot } from './core'
 
 dotenv.config()
+sourceMapSupport.install()
+installGlobals()
 
 async function main() {
-  await yargs
-    .command('start', 'Starts Discord bot', app.startBot)
-    .command('register', 'Register commands', app.registerCommands)
-    .demandCommand(1, 'You must specify at least 1 command')
-    .scriptName('./tdr-bot')
-    .alias('h', 'help')
-    .alias('v', 'version')
-    .version('420.69')
-    .help()
-    .strict()
-    .parse()
+  await Promise.all([startBot(), startWebServer()])
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises

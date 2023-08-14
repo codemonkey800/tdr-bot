@@ -7,8 +7,8 @@ module.exports = {
   root: true,
 
   extends: [
-    'airbnb-base',
-    'airbnb-typescript/base',
+    'airbnb',
+    'airbnb-typescript',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:prettier/recommended',
@@ -35,8 +35,23 @@ module.exports = {
 
   plugins: ['simple-import-sort', 'unused-imports'],
 
+  overrides: [
+    {
+      files: [
+        './src/app/entry.*.tsx',
+        './src/app/root.tsx',
+        './src/app/routes/**/*.ts{,x}',
+      ],
+      rules: {
+        'import/no-default-export': 'off',
+        'import/prefer-default-export': 'error',
+      },
+    },
+  ],
+
   rules: {
     'no-console': 'off',
+    'import/order': 'off',
 
     // It's helpful to split functionality into multiple functions within a class.
     'class-methods-use-this': 'off',
@@ -71,5 +86,9 @@ module.exports = {
         argsIgnorePattern: '^_',
       },
     ],
+
+    // React import not needed
+    'react/react-in-jsx-scope': 'off',
+    'react/jsx-uses-react': 'off',
   },
 }
