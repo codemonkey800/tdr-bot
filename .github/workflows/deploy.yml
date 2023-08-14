@@ -2,8 +2,21 @@ name: Prod deploy
 
 on:
   push:
+    paths:
+      - '*.js'
+      - '*.ts'
+      - 'Dockerfile'
+      - 'fly.tmol'
+      - 'package.json'
+      - 'public/**'
+      - 'src/**'
+      - 'tsconfig.json'
     branches:
       - main
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   deploy:
