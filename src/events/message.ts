@@ -1,11 +1,4 @@
 import { Message } from 'discord.js'
-import {
-  AgentExecutor,
-  initializeAgentExecutorWithOptions,
-} from 'langchain/agents'
-import { ChatOpenAI } from 'langchain/chat_models/openai'
-import { SerpAPI } from 'langchain/tools'
-import { Calculator } from 'langchain/tools/calculator'
 import _ from 'lodash'
 import { getClientID } from 'src/utils'
 
@@ -30,38 +23,7 @@ async function handleWarMessage(message: Message<boolean>) {
   return false
 }
 
-let cachedExecutor: AgentExecutor | undefined
-let count = 0
-
-async function maybeInitExecutor(): Promise<AgentExecutor> {
-  if (cachedExecutor && count < 69) {
-    count += 1
-    return cachedExecutor
-  }
-
-  if (count === 69) {
-    console.log('Recreating executor to clear memory')
-  }
-
-  count = 0
-
-  const model = new ChatOpenAI({ temperature: 0 })
-  const tools = [
-    new SerpAPI(process.env.SERP_API_KEY, {
-      hl: 'en',
-      gl: 'us',
-    }),
-    new Calculator(),
-  ]
-
-  console.log('Creating executor...')
-  cachedExecutor = await initializeAgentExecutorWithOptions(tools, model, {
-    agentType: 'chat-conversational-react-description',
-  })
-  console.log('Executor created!')
-
-  return cachedExecutor
-}
+let messages: ChatCompletionRequestMessage[] = []
 
 async function handleChatMessage(message: Message<boolean>) {
   const clientId = getClientID()
@@ -98,7 +60,11 @@ async function handleChatMessage(message: Message<boolean>) {
     )
 
     console.log(`Generating completion for message: "${formattedMessage}"`)
-    let messages: ChatCompletionRequestMessage[] = []
+
+    messages.push({
+      role: 'user',
+      content: `${message.author.username} said "${formattedMessage}"`,
+    })
 
     const config = new Configuration({ apiKey: process.env.OPENAI_API_KEY })
     const openai = new OpenAIApi(config)
@@ -134,10 +100,6 @@ async function handleChatMessage(message: Message<boolean>) {
           `,
         },
         ...messages,
-        {
-          role: 'user',
-          content: `${message.author.username} said "${formattedMessage}"`,
-        },
       ],
     })
 
