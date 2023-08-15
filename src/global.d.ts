@@ -1,5 +1,3 @@
-import { ServerState } from './state'
-
 declare namespace NodeJS {
   interface ProcessEnv {
     DISCORD_API_TOKEN: string
@@ -9,6 +7,17 @@ declare namespace NodeJS {
   }
 }
 
-declare namespace global {
-  var serverState: ServerState
+declare module 'google-search-results-nodejs' {
+  export interface SearchParams {
+    gl: string
+    google_domain: string
+    hl: string
+    location: string
+    q: string
+  }
+
+  export class GoogleSearch {
+    constructor(apiKey: string)
+    json<T>(params: SearchParams, callback: (data: T) => void): void
+  }
 }

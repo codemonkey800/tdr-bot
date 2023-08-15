@@ -1,9 +1,9 @@
 import { Message } from 'discord.js'
 import _ from 'lodash'
-import { getClientID } from 'src/utils'
+import { getClientID, getSearchKnowledgeGraph } from 'src/utils'
 
 import { EventHandler } from './types'
-import { Configuration, OpenAIApi } from 'openai'
+import { ChatCompletionFunctions, Configuration, OpenAIApi } from 'openai'
 import { getServerState } from 'src/state'
 
 async function handleWarMessage(message: Message<boolean>) {
@@ -68,7 +68,24 @@ async function handleChatMessage(message: Message<boolean>) {
 
     const config = new Configuration({ apiKey: process.env.OPENAI_API_KEY })
     const openai = new OpenAIApi(config)
+    const functions: ChatCompletionFunctions[] = [
+      {
+        name: 'search',
+        description: 'Requests search results fromg Google Search API',
+        parameters: {
+          properties: {
+            query: {
+              description: 'Query string to pass to Google search API',
+              type: 'string',
+            },
+          },
+          required: ['query'],
+          type: 'object',
+        },
+      },
+    ]
     const response = await openai.createChatCompletion({
+      functions,
       model: 'gpt-4',
       messages: serverState.history,
     })
@@ -78,7 +95,54 @@ async function handleChatMessage(message: Message<boolean>) {
     const messageResponse = response.data.choices[0].message
     if (messageResponse) {
       serverState.addMessage(messageResponse)
-      await message.channel.send(messageResponse)
+
+      if (messageResponse.function_call?.name === 'search') {
+        const args = JSON.parse(messageResponse.function_call.arguments ?? '{}')
+        console.log(`searching on google with query: "${args.query}"`)
+        const graph = await getSearchKnowledgeGraph(args.query)
+
+        if (graph) {
+          serverState.addMessage({
+            role: 'function',
+            name: 'search',
+            content: JSON.stringify(graph),
+          })
+
+          const nextResponse = await openai.createChatCompletion({
+            functions,
+            model: 'gpt-4',
+            messages: serverState.history,
+          })
+
+          const nextMessageResponse = nextResponse.data.choices[0].message
+          if (nextMessageResponse) {
+            await message.channel.send(nextMessageResponse)
+          }
+        } else {
+          console.log(
+            `Unable to load knowledge graph for query="${args.query}"`,
+          )
+
+          serverState.addMessage({
+            role: 'system',
+            content:
+              'You were unable to find results for the previous query. Let the user know that you could not find information about it.',
+          })
+
+          const nextResponse = await openai.createChatCompletion({
+            functions,
+            model: 'gpt-4',
+            messages: serverState.history,
+          })
+
+          const nextMessageResponse = nextResponse.data.choices[0].message
+          if (nextMessageResponse) {
+            await message.channel.send(nextMessageResponse)
+          }
+        }
+      } else {
+        await message.channel.send(messageResponse)
+      }
     } else {
       throw new Error('Chat completion could not be generated :(')
     }

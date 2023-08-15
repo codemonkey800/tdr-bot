@@ -98,7 +98,14 @@ export class ServerState {
     return [
       {
         role: 'system',
-        content: this.prompt,
+        content: dedent`
+          ${this.prompt}
+
+          If you do not know the answer to the question a user is asking, you
+          may call the function \`search({ query })\` where \`query\` is a query
+          string that is passed to the Google API. The value for \`query\`
+          should be based on the question being asked in much simpler terms.
+        `,
       } as ChatCompletionResponseMessage,
       ...this.messages,
     ]
