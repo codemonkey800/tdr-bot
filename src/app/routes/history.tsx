@@ -15,6 +15,15 @@ export function loader() {
   return json(serverState.toJSON())
 }
 
+function formatMessageContent(content = '') {
+  try {
+    const obj = JSON.parse(content)
+    return <pre>{JSON.stringify(obj, null, 2)}</pre>
+  } catch (_) {
+    return content
+  }
+}
+
 export default function Index() {
   const clearMessagesFetcher = useFetcher()
   const state = useLoaderData<ServerStateProperties>()
@@ -41,9 +50,28 @@ export default function Index() {
             .slice()
             .reverse()
             .map((message) => (
-              <div key={message.content} className="bg-gray-800 p-2">
+              <div
+                key={message.content}
+                className="bg-gray-800 p-3 flex flex-col gap-2"
+              >
                 <p>Role: {message.role}</p>
-                <p className="text-sm ml-4">{message.content}</p>
+                <div className="overflow-auto max-h-[600px]">
+                  {message.function_call ? (
+                    <>
+                      <p className="text-sm ml-4">
+                        Function: {message.function_call.name}
+                      </p>
+                      <p className="text-sm ml-4">
+                        Args:{' '}
+                        {formatMessageContent(message.function_call.arguments)}
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-sm ml-4">
+                      {formatMessageContent(message.content)}
+                    </p>
+                  )}
+                </div>
               </div>
             ))}
         </div>
