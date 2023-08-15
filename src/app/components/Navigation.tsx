@@ -21,11 +21,11 @@ export function Navigation() {
   return (
     <div>
       <div className="flex items-center justify-center gap-[32px]">
-        <img src="/sad-pepe.png" width="80px" />
-        <p className="text-[4vw]">TDR Bot</p>
+        <img src="/sad-pepe.png" width="70px" />
+        <p className="text-[40px]">TDR Bot</p>
       </div>
 
-      <nav className="flex items-center gap-2 mt-4">
+      <nav className="flex items-center gap-2 my-[32px]">
         <NavigationLocation to="/">Home</NavigationLocation>
         <NavigationLocation to="/history">History</NavigationLocation>
       </nav>

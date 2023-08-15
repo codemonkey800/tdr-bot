@@ -27,6 +27,7 @@ export async function action({ request }: ActionArgs) {
 
   const serverState = getServerState()
   serverState.prompt = body.get('prompt')?.toString() ?? serverState.prompt
+  serverState.messages = []
 
   return json(serverState.toJSON())
 }
@@ -49,8 +50,11 @@ export default function Index() {
     <div className="h-screen w-screen bg-gray-900 text-white flex flex-col flex-auto p-4 items-center overflow-y-auto">
       <Navigation />
 
-      <Form className="flex flex-col w-full max-w-[60vw]" method="post">
-        <p className="text-2xl font-semibold">Prompt</p>
+      <Form
+        className="flex flex-col w-full max-w-[80vw] md:max-w-[60vw]"
+        method="post"
+      >
+        <p className="text-2xl font-semibold mb-3">Prompt</p>
         <textarea
           name="prompt"
           className={clsx(
@@ -61,7 +65,7 @@ export default function Index() {
           defaultValue={state.prompt}
         />
 
-        <p className="text-2xl font-semibold mt-8">Message Bounds</p>
+        <p className="text-2xl font-semibold mt-8 mb-3">Message Bounds</p>
         <div className="grid gap-4 grid-cols-[150px,1fr]">
           <p className="whitespace-nowrap">Message Max</p>
           <input
