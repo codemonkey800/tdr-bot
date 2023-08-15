@@ -7,9 +7,10 @@ import {
 } from '@remix-run/react'
 import clsx from 'clsx'
 import { ReactNode, useEffect, useState } from 'react'
-import { getServerState, ServerStateProperties } from 'src/state'
+import { ServerStateProperties } from 'src/state'
 import { Navigation } from '../components/Navigation'
 import { DRUNK_PROMPT, KAWAII_PROMPT, MEAN_PROMPT } from 'src/prompts'
+import { getModule } from 'src/modules'
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -19,7 +20,7 @@ export const meta: V2_MetaFunction = () => {
 }
 
 export function loader() {
-  const serverState = getServerState()
+  const serverState = getModule('state')
   return json(serverState.toJSON())
 }
 
@@ -52,7 +53,7 @@ function PromptButton({
 export async function action({ request }: ActionArgs) {
   const body = await request.formData()
 
-  const serverState = getServerState()
+  const serverState = getModule('state')
   const nextPrompt = body.get('prompt')?.toString()
 
   if (nextPrompt) {

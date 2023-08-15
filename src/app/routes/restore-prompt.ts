@@ -1,5 +1,5 @@
 import { ActionArgs } from '@remix-run/node'
-import { getServerState } from 'src/state'
+import { getModule } from 'src/modules'
 
 export async function action({ request }: ActionArgs) {
   const data = await request.formData()
@@ -9,7 +9,7 @@ export async function action({ request }: ActionArgs) {
     return { ok: false }
   }
 
-  const serverState = getServerState()
+  const serverState = getModule('state')
   serverState.setPrompt(serverState.promptHistory[+index])
 
   return { ok: true }

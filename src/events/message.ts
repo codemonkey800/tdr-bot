@@ -4,7 +4,7 @@ import { getClientID, getSearchKnowledgeGraph } from 'src/utils'
 
 import { EventHandler } from './types'
 import { ChatCompletionFunctions, Configuration, OpenAIApi } from 'openai'
-import { getServerState } from 'src/state'
+import { getModule } from 'src/modules'
 
 async function handleWarMessage(message: Message<boolean>) {
   const clientId = getClientID()
@@ -26,7 +26,7 @@ async function handleWarMessage(message: Message<boolean>) {
 
 async function handleChatMessage(message: Message<boolean>) {
   const clientId = getClientID()
-  const serverState = getServerState()
+  const serverState = getModule('state')
 
   if (
     // Is own message

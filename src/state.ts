@@ -57,10 +57,6 @@ export class ServerState {
   }
 }
 
-export function initServerState() {
-  ;(global as any).serverState = new ServerState()
-}
-
 export function getServerState() {
   return (global as any).serverState as ServerState
 }

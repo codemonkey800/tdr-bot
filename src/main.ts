@@ -3,14 +3,15 @@ import dotenv from 'dotenv'
 import sourceMapSupport from 'source-map-support'
 import { startWebServer } from './core/start-web-server'
 import { startBot } from './core'
-import { initServerState } from './state'
+import { ServerState } from './state'
+import { addModule } from './modules'
 
 dotenv.config()
 sourceMapSupport.install()
 installGlobals()
 
 async function main() {
-  initServerState()
+  addModule('state', new ServerState())
   await Promise.all([startBot(), startWebServer()])
 }
 

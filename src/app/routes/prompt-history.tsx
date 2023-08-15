@@ -1,7 +1,8 @@
 import { json, type V2_MetaFunction } from '@remix-run/node'
 import { useFetcher, useLoaderData } from '@remix-run/react'
-import { getServerState, ServerStateProperties } from 'src/state'
+import { ServerStateProperties } from 'src/state'
 import { Navigation } from '../components/Navigation'
+import { getModule } from 'src/modules'
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -11,7 +12,7 @@ export const meta: V2_MetaFunction = () => {
 }
 
 export function loader() {
-  const serverState = getServerState()
+  const serverState = getModule('state')
   return json(serverState.toJSON())
 }
 

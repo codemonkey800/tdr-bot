@@ -4,6 +4,7 @@ import { getAPIToken } from 'src/utils'
 import { setupCommandHandlers } from './setup-command-handlers'
 import { setupEventHandlers } from './setup-event-handlers'
 import { setupSchedules } from './setup-schedules'
+import { addModule } from 'src/modules'
 
 export async function startBot() {
   const client = new Client({
@@ -15,6 +16,7 @@ export async function startBot() {
   })
 
   client.once(Events.ClientReady, (readyClient) => {
+    addModule('discordClient', readyClient)
     setupCommandHandlers(readyClient)
     setupSchedules(readyClient)
     setupEventHandlers(readyClient)

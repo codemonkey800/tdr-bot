@@ -1,7 +1,7 @@
-import { getServerState } from 'src/state'
+import { getModule } from 'src/modules'
 
 export async function action() {
-  const serverState = getServerState()
+  const serverState = getModule('state')
   serverState.promptHistory = []
 
   return { ok: true }
