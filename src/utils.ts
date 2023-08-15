@@ -24,7 +24,7 @@ export function getClientID(): string {
 }
 
 export async function getSearchKnowledgeGraph(query: string) {
-  const search = new GoogleSearch(process.env.SERPAPI_API_KEY)
+  const search = new GoogleSearch(process.env.SERP_API_KEY)
   const searchParams: SearchParams = {
     q: query,
     location: 'Stockton, California, United States',

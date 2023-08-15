@@ -3,7 +3,7 @@ declare namespace NodeJS {
     DISCORD_API_TOKEN: string
     DISCORD_CLIENT_ID: string
     OPENAI_API_KEY: string
-    SERPAPI_API_KEY: string
+    SERP_API_KEY: string
   }
 }
 
