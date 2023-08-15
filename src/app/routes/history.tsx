@@ -37,12 +37,15 @@ export default function Index() {
         </div>
 
         <div className="flex flex-col gap-2">
-          {state.history.map((message) => (
-            <div key={message.content} className="bg-gray-800 p-2">
-              <p>Role: {message.role}</p>
-              <p className="text-sm ml-4">{message.content}</p>
-            </div>
-          ))}
+          {state.history
+            .slice()
+            .reverse()
+            .map((message) => (
+              <div key={message.content} className="bg-gray-800 p-2">
+                <p>Role: {message.role}</p>
+                <p className="text-sm ml-4">{message.content}</p>
+              </div>
+            ))}
         </div>
       </div>
     </div>
