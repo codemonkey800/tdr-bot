@@ -90,7 +90,9 @@ async function handleChatMessage(message: Message<boolean>) {
     console.error('Error resolving chat message', err)
 
     await message.reply(
-      `An error occurred for this message\n\`\`\`\n${String(err)}\n\`\`\``,
+      `An error occurred for this message\n\`\`\`\n${String(
+        err,
+      )}\n\`\`\`\nTry clearing the chat history on https://tdr-bot.fly.dev/history\nCheck the logs at https://fly.io/apps/tdr-bot/monitoring`,
     )
 
     clearInterval(typingInterval)
