@@ -90,7 +90,10 @@ async function handleChatMessage(message: Message<boolean>) {
       messages: serverState.history,
     })
 
-    console.log(`author=${message.author.username}`, response.data.choices)
+    console.log(
+      `Received choices for author=${message.author.username}`,
+      response.data.choices,
+    )
 
     const messageResponse = response.data.choices[0].message
     if (messageResponse) {
