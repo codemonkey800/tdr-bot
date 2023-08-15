@@ -3,7 +3,8 @@ import _ from 'lodash'
 import { getClientID } from 'src/utils'
 
 import { EventHandler } from './types'
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai'
+import { Configuration, OpenAIApi } from 'openai'
+import { getServerState } from 'src/state'
 
 async function handleWarMessage(message: Message<boolean>) {
   const clientId = getClientID()
@@ -23,10 +24,9 @@ async function handleWarMessage(message: Message<boolean>) {
   return false
 }
 
-let messages: ChatCompletionRequestMessage[] = []
-
 async function handleChatMessage(message: Message<boolean>) {
   const clientId = getClientID()
+  const serverState = getServerState()
 
   if (
     // Is own message
@@ -61,7 +61,7 @@ async function handleChatMessage(message: Message<boolean>) {
 
     console.log(`Generating completion for message: "${formattedMessage}"`)
 
-    messages.push({
+    serverState.addMessage({
       role: 'user',
       content: `${message.author.username} said "${formattedMessage}"`,
     })
@@ -70,49 +70,14 @@ async function handleChatMessage(message: Message<boolean>) {
     const openai = new OpenAIApi(config)
     const response = await openai.createChatCompletion({
       model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: `
-          You are a very good friend and are a member of the Discord server TDR.
-          This server is a group of friends that have known each other since
-          high school, and you are now part of that group of friends. You know
-          each person by username.
-
-          paulbeenis420 and paulcreenis69 is Jeremy
-          jackjack2 is Jack
-          krisithea is Kristian
-          basuradavid is David
-          bigkrizz is Kris
-          bbonedaddy is Baker
-          casserole69 is Carlos
-          hiro.shi is Shane
-
-          Your name is TDR Bot and your creator is Jeremy.
-
-          Try your best to respond to every message in a friendly manner, and
-          try to make conversation with people and ask follow up questions if
-          possible. It should flow like a normal conversation unless the message
-          indicates that it's the end of the conversation.
-
-          Every message you receive will be in the format:
-          <Author> said "<Message>"
-          `,
-        },
-        ...messages,
-      ],
+      messages: serverState.history,
     })
 
     console.log(`author=${message.author.username}`, response.data.choices)
 
     const messageResponse = response.data.choices[0].message
     if (messageResponse) {
-      messages.push(messageResponse)
-
-      if (messages.length > 20) {
-        messages = messages.slice(15)
-      }
-
+      serverState.addMessage(messageResponse)
       await message.channel.send(messageResponse)
     } else {
       throw new Error('Chat completion could not be generated :(')
@@ -120,10 +85,14 @@ async function handleChatMessage(message: Message<boolean>) {
     clearInterval(typingInterval)
     console.log('Response sent successfully')
   } catch (err) {
+    serverState.messages.pop()
+
     console.error('Error resolving chat message', err)
+
     await message.reply(
       `An error occurred for this message\n\`\`\`\n${String(err)}\n\`\`\``,
     )
+
     clearInterval(typingInterval)
 
     return false

@@ -1,3 +1,5 @@
+import { ServerState } from './state'
+
 declare namespace NodeJS {
   interface ProcessEnv {
     DISCORD_API_TOKEN: string
@@ -5,4 +7,8 @@ declare namespace NodeJS {
     OPENAI_API_KEY: string
     SERPAPI_API_KEY: string
   }
+}
+
+declare namespace global {
+  var serverState: ServerState
 }
