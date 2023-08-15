@@ -25,9 +25,12 @@ export function Navigation() {
         <p className="text-[40px]">TDR Bot</p>
       </div>
 
-      <nav className="flex items-center gap-2 my-[32px]">
+      <nav className="flex items-center gap-4 my-[32px]">
         <NavigationLocation to="/">Home</NavigationLocation>
         <NavigationLocation to="/history">History</NavigationLocation>
+        <NavigationLocation to="/prompt-history">
+          Prompt History
+        </NavigationLocation>
       </nav>
     </div>
   )

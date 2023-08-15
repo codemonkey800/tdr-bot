@@ -32,13 +32,13 @@ export default function Index() {
     <div className="h-screen w-screen bg-gray-900 text-white flex flex-col flex-auto p-4 items-center overflow-y-auto">
       <Navigation />
 
-      <div className="flex flex-col max-w-[80vw] md:max-w-[60vw] mt-8 mb-4 gap-2">
+      <div className="flex flex-col w-full max-w-[80vw] md:max-w-[60vw] mt-8 mb-4 gap-2">
         <div className="flex items-center justify-between">
           <p className="text-2xl font-semibold">
             Chat History ({state.history.length})
           </p>
 
-          <clearMessagesFetcher.Form method="post" action="/clear-messages">
+          <clearMessagesFetcher.Form method="post" action="/clear-history">
             <button className="bg-purple-600 px-2 py-1 rounded " type="submit">
               Clear
             </button>
