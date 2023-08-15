@@ -38,7 +38,10 @@ export async function getSearchKnowledgeGraph(query: string) {
   )) as any
 
   const knowledgeGraph = queryRes.knowledge_graph
-  const stack = Object.keys(knowledgeGraph).map((key) => [key, knowledgeGraph])
+  const stack = knowledgeGraph
+    ? Object.keys(knowledgeGraph).map((key) => [key, knowledgeGraph])
+    : []
+
   while (stack.length > 0) {
     const [key, node] = stack.pop() ?? []
 
