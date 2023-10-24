@@ -14,3 +14,7 @@ node_modules/digest-fetch/**/packing
 # flyctl launch added from node_modules/tailwindcss/stubs/.gitignore
 !node_modules/tailwindcss/stubs/**/*
 fly.toml
+
+.git
+.gitignore
+dist
