@@ -1,1 +1,1 @@
-nvm use latest
+nvm use v21
