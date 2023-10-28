@@ -22,6 +22,12 @@ export function getClientID(): string {
   return env(key)
 }
 
+/**
+ * Gets a stringified result of answer snippets from the Google Search API. This
+ * works by checking different locations in the JSON response for the best
+ * answer. This is based on LangChain's implementation of the SerpAPI tool:
+ * https://bit.ly/40dyWky
+ */
 export async function getSearchResultSnippets(query: string): Promise<string> {
   const search = new GoogleSearch(process.env.SERP_API_KEY)
   const searchParams: SearchParams = {
