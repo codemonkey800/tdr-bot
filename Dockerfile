@@ -1,6 +1,7 @@
 FROM node:current-alpine as base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 COPY . /app
 WORKDIR /app
 
@@ -13,6 +14,6 @@ RUN pnpm run build
 
 FROM base
 COPY --from=prod-deps /app/node_modules /app/node_modules
-COPY --from=build /app/dist /app/dist
+COPY --from=build /app/build /app/build
 EXPOSE 8080
 ENTRYPOINT ["pnpm", "start"]

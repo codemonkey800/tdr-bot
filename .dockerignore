@@ -17,4 +17,7 @@ fly.toml
 
 .git
 .gitignore
+*.md
 dist
+Dockerfile
+LICENSE
