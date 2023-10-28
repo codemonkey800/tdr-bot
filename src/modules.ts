@@ -8,7 +8,7 @@ interface Modules {
 }
 
 type ModuleKey = keyof Modules
-const MODULES = Symbol('modules')
+const MODULES = '__modules'
 
 export function getModules(): Modules {
   return (global as any)[MODULES]
