@@ -1,6 +1,6 @@
 import { Message } from 'discord.js'
 import _ from 'lodash'
-import { getClientID, getSearchKnowledgeGraph } from 'src/utils'
+import { getClientID, getSearchResultSnippets } from 'src/utils'
 
 import { EventHandler } from './types'
 import { ChatCompletionFunctions, Configuration, OpenAIApi } from 'openai'
@@ -102,13 +102,13 @@ async function handleChatMessage(message: Message<boolean>) {
       if (messageResponse.function_call?.name === 'search') {
         const args = JSON.parse(messageResponse.function_call.arguments ?? '{}')
         console.log(`searching on google with query: "${args.query}"`)
-        const graph = await getSearchKnowledgeGraph(args.query)
+        const snippets = await getSearchResultSnippets(args.query)
 
-        if (graph) {
+        if (snippets) {
           serverState.addMessage({
             role: 'function',
             name: 'search',
-            content: JSON.stringify(graph),
+            content: snippets,
           })
 
           const nextResponse = await openai.createChatCompletion({
