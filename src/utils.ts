@@ -1,3 +1,5 @@
+import axios from 'axios'
+import dayjs from 'dayjs'
 import { GoogleSearch, SearchParams } from 'google-search-results-nodejs'
 
 export function env(key: string): string {
@@ -20,6 +22,22 @@ export function getAPIToken(): string {
 export function getClientID(): string {
   const key = 'DISCORD_CLIENT_ID'
   return env(key)
+}
+
+export function getErrorMessage(error: unknown): string {
+  if (axios.isAxiosError(error)) {
+    return JSON.stringify(error.response?.data, null, 2)
+  }
+
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  return JSON.stringify(error)
+}
+
+export function formatDate(date: dayjs.ConfigType): string {
+  return dayjs(date).format('MMMM DD, YYYY h:mm:ss A')
 }
 
 /**

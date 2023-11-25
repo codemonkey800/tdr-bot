@@ -35,6 +35,9 @@ dependencies:
   cross-env:
     specifier: 7.0.3
     version: 7.0.3
+  dayjs:
+    specifier: ^1.11.10
+    version: 1.11.10
   dedent:
     specifier: ^1.5.1
     version: 1.5.1
@@ -3806,6 +3809,10 @@ packages:
     resolution: {integrity: sha512-MZd3VlchQkp8rdend6vrx7MmVDJzSNTBvghvKjirLkD+WTChA3KUf0jkE68Q4UyctNqI11zZO9/x2Yx+ub5Cvg==}
     engines: {node: '>= 14'}
     dev: true
+
+  /dayjs@1.11.10:
+    resolution: {integrity: sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==}
+    dev: false
 
   /deasync@0.1.29:
     resolution: {integrity: sha512-EBtfUhVX23CE9GR6m+F8WPeImEE4hR/FW9RkK0PMl9V1t283s0elqsTD8EZjaKX28SY1BW2rYfCgNsAYdpamUw==}
