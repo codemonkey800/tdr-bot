@@ -1,0 +1,10 @@
+html,
+body,
+main {
+  @apply border-0 m-0 p-0;
+  @apply w-screen h-screen;
+}
+
+main {
+  @apply flex flex-col flex-auto;
+}
